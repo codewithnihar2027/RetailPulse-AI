@@ -1,24 +1,21 @@
 from pprint import pprint
 
-from app.ingestion.csv_loader import CSVLoader
-from app.ingestion.validator import DatasetValidator
-from app.ingestion.schema import SchemaDetector
-from app.ingestion.profiler import DataProfiler
+from app.pipeline import RetailPipeline
 
 
 def main():
 
-    file_path = "data/raw/online_retail_II.csv"
+    pipeline = RetailPipeline()
 
-    df = CSVLoader.load_csv(file_path)
+    result = pipeline.run("data/raw/online_retail_II.csv")
 
-    DatasetValidator.validate_not_empty(df)
+    print("\n===== SCHEMA =====")
 
-    print("\n===== SCHEMA REPORT =====")
-    pprint(SchemaDetector.generate_report(df))
+    pprint(result["schema"])
 
-    print("\n===== DATA PROFILE =====")
-    pprint(DataProfiler.generate_profile(df))
+    print("\n===== PROFILE =====")
+
+    pprint(result["profile"])
 
 
 if __name__ == "__main__":

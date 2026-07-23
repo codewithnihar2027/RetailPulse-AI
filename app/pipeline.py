@@ -1,0 +1,36 @@
+from app.ingestion.csv_loader import CSVLoader
+from app.ingestion.validator import DatasetValidator
+from app.ingestion.schema import SchemaDetector
+from app.ingestion.profiler import DataProfiler
+
+
+class RetailPipeline:
+    """
+    Main orchestration pipeline for RetailPulse.
+
+    Responsible for coordinating the ingestion workflow.
+    """
+
+    def run(self, file_path: str) -> dict:
+
+        # Step 1
+        df = CSVLoader.load_csv(file_path)
+
+        # Step 2
+        DatasetValidator.validate_not_empty(df)
+
+        # Step 3
+        schema_report = SchemaDetector.generate_report(df)
+
+        # Step 4
+        profile_report = DataProfiler.generate_profile(df)
+
+        return {
+
+            "dataframe": df,
+
+            "schema": schema_report,
+
+            "profile": profile_report
+
+        }
