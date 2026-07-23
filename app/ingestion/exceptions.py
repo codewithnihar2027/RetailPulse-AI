@@ -11,3 +11,7 @@ class UnsupportedDatasetError(Exception):
 class SchemaMappingError(Exception):
     """Raised when schema mapping fails."""
     pass
+
+class MissingRequiredColumnsError(Exception):
+    """Raised when one or more required columns are missing."""
+    pass
