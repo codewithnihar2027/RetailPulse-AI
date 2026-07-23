@@ -1,5 +1,9 @@
+from pprint import pprint
+
 from app.ingestion.csv_loader import CSVLoader
 from app.ingestion.validator import DatasetValidator
+from app.ingestion.schema import SchemaDetector
+from app.ingestion.profiler import DataProfiler
 
 
 def main():
@@ -10,10 +14,11 @@ def main():
 
     DatasetValidator.validate_not_empty(df)
 
-    print("Dataset loaded successfully.")
-    print("Validation passed.")
+    print("\n===== SCHEMA REPORT =====")
+    pprint(SchemaDetector.generate_report(df))
 
-    print(df.head())
+    print("\n===== DATA PROFILE =====")
+    pprint(DataProfiler.generate_profile(df))
 
 
 if __name__ == "__main__":
