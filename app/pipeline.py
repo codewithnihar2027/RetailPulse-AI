@@ -5,6 +5,8 @@ from app.ingestion.profiler import DataProfiler
 
 from app.ingestion.mapper import ColumnMapper
 from app.preprocessing.cleaning.cleaner import DataCleaner
+from app.preprocessing.feature_engineering.engineer import FeatureEngineer
+from app.analytics.analytics_engine import AnalyticsEngine
 
 class RetailPipeline:
     """
@@ -32,20 +34,23 @@ class RetailPipeline:
         # Step 5
         mapping = ColumnMapper.build_mapping(df.columns)
 
+        # Step 6
         df = ColumnMapper.rename_dataframe(df, mapping)
 
+        # Step 7
         df = DataCleaner.clean(df)
 
+        # Step 8
+        df = FeatureEngineer.engineer(df)
+
+        # Step 9
+        analytics = AnalyticsEngine.generate(df)
+
         return {
-
             "dataframe": df,
-
             "mapping": mapping,
-
             "original_columns": original_columns,
-
             "schema": schema_report,
-
-            "profile": profile_report
-
+            "profile": profile_report,
+            "analytics": analytics
         }
