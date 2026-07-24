@@ -1,114 +1,124 @@
 from pprint import pprint
 
 from app.pipeline import RetailPipeline
-from app.ingestion.mapper import ColumnMapper
-
-# pipeline = RetailPipeline()
-
-# result = pipeline.run("data/raw/online_retail_II.csv")
-
-# print(result["mapping"])
-
-# print(result["dataframe"].columns)
-# print(result["dataframe"].dtypes)
-
-# result = pipeline.run("data/raw/online_retail_II.csv")
-
-# print(result["dataframe"].isnull().sum())
-
-# result = pipeline.run("data/raw/online_retail_II.csv")
-
-# print(result["dataframe"].columns)
-
-# print(
-#     result["dataframe"][
-#         ["Quantity", "Price", "Revenue"]
-#     ].head()
-# )
+from app.forecasting.forecasting_engine import ForecastingEngine
+from app.forecasting.feature_engineering import ForecastFeatureEngineering
+from app.forecasting.model_manager import ForecastModelManager
+from app.forecasting.explainability import Explainability
 
 def main():
 
+    # ======================================================
+    # RUN PIPELINE
+    # ======================================================
+
     pipeline = RetailPipeline()
 
-    result = pipeline.run("data/raw/online_retail_II.csv")
+    result = pipeline.run(
+        "data/raw/online_retail_II.csv"
+    )
 
-    # print("\n===== SCHEMA =====")
+    # ======================================================
+    # PREPARE DAILY SALES
+    # ======================================================
 
-    # pprint(result["schema"])
+    daily_sales = ForecastingEngine.prepare_daily_sales(
+        result["dataframe"]
+    )
 
-    # print("\n===== PROFILE =====")
+    # ======================================================
+    # NAIVE FORECAST (Baseline)
+    # ======================================================
 
-    # pprint(result["profile"])
-    # result = pipeline.run("data/raw/online_retail_II.csv")
+    train_df, test_df = ForecastingEngine.train_test_split(
+        daily_sales
+    )
 
-    # from pprint import pprint
+    naive_forecast = ForecastingEngine.naive_forecast(
+        train_df,
+        test_df
+    )
 
-    # print("\n===== KPIs =====")
+    naive_metrics = ForecastingEngine.evaluate_forecast(
+        naive_forecast
+    )
 
-    # pprint(result["analytics"])
+    print("\n========== NAIVE FORECAST ==========\n")
+    pprint(naive_metrics)
 
-    # from pprint import pprint
+    # ======================================================
+    # FEATURE ENGINEERING
+    # ======================================================
 
-    # print("\n===== MONTHLY SALES =====")
+    daily_sales = ForecastFeatureEngineering.create_features(
+        daily_sales
+    )
 
-    # pprint(result["analytics"]["monthly_sales"])
-    # print("\n===== COUNTRY SALES =====")
+    print("\n========== FEATURE DATA ==========\n")
 
-    # from pprint import pprint
+    print(daily_sales.info())
+    print()
+    print(daily_sales.head())
 
-    # pprint(result["analytics"]["country_sales"])
-    # print("\n===== TOP PRODUCTS BY REVENUE =====")
-    # pprint(result["analytics"]["top_products_by_revenue"])
+    # ======================================================
+    # TRAIN / TEST SPLIT (Feature Engineered Data)
+    # ======================================================
 
-    # print("\n===== TOP PRODUCTS BY QUANTITY =====")
-    # pprint(result["analytics"]["top_products_by_quantity"])
-    # print("\n===== TOP CUSTOMERS BY REVENUE =====")
-    # pprint(result["analytics"]["top_customers_by_revenue"])
+    train_df, test_df = ForecastingEngine.train_test_split(
+        daily_sales
+    )
 
-    # print("\n===== TOP CUSTOMERS BY ORDERS =====")
-    # pprint(result["analytics"]["top_customers_by_orders"])
+    # ======================================================
+    # MODEL COMPARISON
+    # ======================================================
 
-    # print("\n===== RFM =====")
+    results = ForecastModelManager.compare_models(
+        train_df,
+        test_df
+    )
 
-    # print(
-    #     result["analytics"]["rfm_summary"]
-    #     .head()
+    print("\n========== MODEL COMPARISON ==========\n")
+
+    for model_name, result in results.items():
+
+        print(f"{model_name}")
+
+        pprint(result["metrics"])
+
+        print()
+
+    # ======================================================
+# FEATURE IMPORTANCE
+# ======================================================
+
+    for model_name in ["Random Forest", "XGBoost"]:
+
+        if model_name not in results:
+            continue
+
+        model = results[model_name]["model"]
+
+        if model is None:
+            continue
+
+        importance = Explainability.feature_importance(model)
+
+        print(f"\n========== {model_name.upper()} FEATURE IMPORTANCE ==========\n")
+
+        print(importance)
+
+    # ======================================================
+    # FUTURE FORECAST
+    # ======================================================
+
+    # Disabled for now.
+    # We'll redesign this after implementing recursive forecasting.
+
+    # future_forecast = ForecastingEngine.predict_next_days(
+    #     daily_sales,
+    #     days=30
     # )
 
-    # print("\n===== RFM TABLE =====")
-
-    # print(
-    #     result["analytics"]["rfm_summary"]["rfm_table"]
-    #     .head()
-    # )
-
-    # print("\n===== CUSTOMER SEGMENTS =====")
-
-    # from pprint import pprint
-
-    # pprint(
-    #     result["analytics"]["rfm_summary"]["segment_summary"]
-    # )
-    # print("\n===== DAILY SALES =====")
-    # pprint(result["analytics"]["daily_sales"])
-
-    # print("\n===== WEEKLY SALES =====")
-    # pprint(result["analytics"]["weekly_sales"])
-
-    # print("\n===== QUARTERLY SALES =====")
-    # pprint(result["analytics"]["quarterly_sales"])
-
-    print("\n===== MONTHLY GROWTH =====")
-    pprint(result["analytics"]["monthly_growth"])
-
-    print("\n===== SALES SUMMARY =====")
-    pprint(result["analytics"]["sales_summary"])
-
-    print("\n===== DAILY SUMMARY =====")
-    pprint(result["analytics"]["daily_summary"])
-
-    print("\n===== AVERAGE DAILY REVENUE =====")
-    print(result["analytics"]["average_daily_revenue"])
 
 if __name__ == "__main__":
     main()
