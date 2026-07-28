@@ -54,7 +54,7 @@ PAGE_ROUTES = {
     "📈 Sales Analytics": SalesPage,
     "👥 Customer Analytics": CustomerPage,
     "📊 Forecasting": ForecastPage,
-    "🤖 AI Insights": AIInsightsPage,
+    "🧠 AI Copilot": AIInsightsPage,
     "⚙ Settings": SettingsPage,
 }
 

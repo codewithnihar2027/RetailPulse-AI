@@ -27,7 +27,7 @@ class Sidebar:
                 "📈 Sales Analytics",
                 "👥 Customer Analytics",
                 "📊 Forecasting",
-                "🤖 AI Insights",
+                "🧠 AI Copilot",
                 "⚙ Settings"
             ]
         )
