@@ -6,9 +6,25 @@ load_dotenv()
 
 class Config:
 
-    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+    LLM_PROVIDER = os.getenv(
+    "LLM_PROVIDER",
+    "gemini"
+    )
+
+    GEMINI_API_KEY = os.getenv(
+        "GEMINI_API_KEY"
+    )
 
     GEMINI_MODEL = os.getenv(
-    "GEMINI_MODEL",
-    "gemini-2.5-pro"
+        "GEMINI_MODEL",
+        "gemini-2.0-flash"
+    )
+
+    OPENROUTER_API_KEY = os.getenv(
+    "OPENROUTER_API_KEY"
+    )
+
+    OPENROUTER_MODEL = os.getenv(
+        "OPENROUTER_MODEL",
+        "deepseek/deepseek-chat"
     )
