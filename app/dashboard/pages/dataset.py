@@ -46,6 +46,7 @@ class DatasetPage:
 
                     DashboardSession.set_pipeline_result(result)
                     DashboardSession.clear_ai_history()
+                    DashboardSession.clear_latest_ai_response()
 
                 st.success("Dataset processed successfully!")
 

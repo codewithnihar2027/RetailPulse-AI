@@ -12,6 +12,11 @@ class DashboardAIService:
 
         response = AIService.ask(question)
 
+        DashboardSession.set_latest_ai_response(
+            question,
+            response
+        )
+
         DashboardSession.add_ai_history(
             question,
             response

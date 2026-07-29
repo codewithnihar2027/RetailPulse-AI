@@ -73,3 +73,32 @@ class DashboardSession:
         import streamlit as st
 
         st.session_state.ai_history = []
+
+        # ==============================
+    # Latest AI Response
+    # ==============================
+
+    @staticmethod
+    def set_latest_ai_response(question, response):
+
+        st.session_state["latest_ai_response"] = {
+            "question": question,
+            "response": response
+        }
+
+
+    @staticmethod
+    def get_latest_ai_response():
+
+        return st.session_state.get(
+            "latest_ai_response"
+        )
+
+
+    @staticmethod
+    def clear_latest_ai_response():
+
+        st.session_state.pop(
+            "latest_ai_response",
+            None
+        )

@@ -18,6 +18,7 @@ class AIInsightsPage:
 
         if st.button("🗑️ Clear Analysis History"):
             DashboardSession.clear_ai_history()
+            DashboardSession.clear_latest_ai_response()
             st.rerun()
 
         st.divider()
@@ -41,11 +42,30 @@ class AIInsightsPage:
             "Generate Insights",
             use_container_width=True,
             type="primary",
+            disabled=not question.strip(),
         ):
 
             with st.spinner("Analyzing your business data..."):
 
                 DashboardAIService.ask(question)
+        latest = DashboardSession.get_latest_ai_response()
+
+        if latest:
+
+            st.divider()
+
+            st.subheader("✨ Latest Analysis")
+
+            with st.container(border=True):
+                st.markdown(
+                    f"**Question:** {latest['question']}"
+                )
+
+                st.markdown("---")
+
+                st.markdown(
+                    latest["response"]
+                )
 
         st.divider()
 

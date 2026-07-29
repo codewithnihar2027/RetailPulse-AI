@@ -36,8 +36,7 @@ class OpenRouterProvider(BaseProvider):
 
         try:
 
-            print("Model:", Config.OPENROUTER_MODEL)
-            print(response.json())
+            print("Using Model:", Config.OPENROUTER_MODEL)
 
             response = requests.post(
                 self.URL,
@@ -46,28 +45,23 @@ class OpenRouterProvider(BaseProvider):
                 timeout=60
             )
 
+            data = response.json()
+
+            print("OpenRouter Response:")
+            print(data)
+
             # Handle API errors gracefully
             if not response.ok:
 
-                try:
-                    error = response.json()
-                    message = error.get(
-                        "error",
-                        {}
-                    ).get(
-                        "message",
-                        response.text
-                    )
-
-                except Exception:
-                    message = response.text
+                message = (
+                    data.get("error", {})
+                    .get("message", response.text)
+                )
 
                 return (
                     f"❌ OpenRouter Error\n\n"
                     f"{message}"
                 )
-
-            data = response.json()
 
             choices = data.get("choices", [])
 
