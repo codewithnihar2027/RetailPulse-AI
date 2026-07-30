@@ -1,4 +1,5 @@
 from app.dashboard.services.dashboard_session import DashboardSession
+from app.dashboard.services.dashboard_data_service import DashboardDataService
 
 
 class ContextBuilder:
@@ -8,9 +9,7 @@ class ContextBuilder:
 
     @staticmethod
     def _to_records(df, limit=10):
-        """
-        Convert DataFrame to a list of dictionaries.
-        """
+
         if df is None:
             return []
 
@@ -25,32 +24,74 @@ class ContextBuilder:
         if not DashboardSession.has_dataset():
             return None
 
-        result = DashboardSession.get_pipeline_result()
-
-        analytics = result["analytics"]
+        analytics = DashboardDataService.get_analytics()
 
         context = {
+
+            # ======================================
+            # KPIs
+            # ======================================
+
             "kpis": analytics.get("kpis"),
+
+            # ======================================
+            # Sales Analytics
+            # ======================================
+
             "sales_summary": analytics.get("sales_summary"),
             "daily_summary": analytics.get("daily_summary"),
             "monthly_growth": analytics.get("monthly_growth"),
-            "rfm_summary": analytics.get("rfm_summary"),
 
-            "top_products": ContextBuilder._to_records(
-                analytics.get("top_products_by_revenue")
+            "monthly_sales": ContextBuilder._to_records(
+                analytics.get("monthly_sales"),
+                limit=24,
             ),
 
-            "top_customers": ContextBuilder._to_records(
-                analytics.get("top_customers_by_revenue")
+            "weekly_sales": ContextBuilder._to_records(
+                analytics.get("weekly_sales"),
+                limit=52,
+            ),
+
+            "quarterly_sales": ContextBuilder._to_records(
+                analytics.get("quarterly_sales"),
+                limit=8,
             ),
 
             "country_sales": ContextBuilder._to_records(
-                analytics.get("country_sales")
+                analytics.get("country_sales"),
+                limit=25,
             ),
 
-            "monthly_sales": ContextBuilder._to_records(
-                analytics.get("monthly_sales")
-            )
+            # ======================================
+            # Product Analytics
+            # ======================================
+
+            "top_products_by_revenue": ContextBuilder._to_records(
+                analytics.get("top_products_by_revenue"),
+                limit=20,
+            ),
+
+            "top_products_by_quantity": ContextBuilder._to_records(
+                analytics.get("top_products_by_quantity"),
+                limit=20,
+            ),
+
+            # ======================================
+            # Customer Analytics
+            # ======================================
+
+            "rfm_summary": analytics.get("rfm_summary"),
+
+            "top_customers_by_revenue": ContextBuilder._to_records(
+                analytics.get("top_customers_by_revenue"),
+                limit=20,
+            ),
+
+            "top_customers_by_orders": ContextBuilder._to_records(
+                analytics.get("top_customers_by_orders"),
+                limit=20,
+            ),
+
         }
 
         return context

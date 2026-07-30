@@ -1,10 +1,11 @@
 import streamlit as st
 
 from app.dashboard.services.dashboard_session import DashboardSession
+from app.dashboard.services.dashboard_data_service import DashboardDataService
 
 from app.dashboard.components.charts.line_chart import LineChart
 from app.dashboard.components.charts.bar_chart import BarChart
-
+from app.dashboard.components.empty_state import EmptyState
 
 class SalesPage:
 
@@ -15,23 +16,25 @@ class SalesPage:
 
         if not DashboardSession.has_dataset():
 
-            st.warning("Please upload a dataset first.")
+            EmptyState.render(
+                "📂 No Dataset Loaded",
+                "Upload and process a retail dataset from the Dataset page to begin using RetailPulse AI."
+            )
+
 
             return
 
-        result = DashboardSession.get_pipeline_result()
+        analytics = DashboardDataService.get_analytics()
 
-        analytics = result["analytics"]
-
-        monthly_sales = analytics["monthly_sales"]
+        monthly_sales = DashboardDataService.get_monthly_sales()
 
         weekly_sales = analytics["weekly_sales"]
 
-        quarterly_sales = analytics["quarterly_sales"]
+        quarterly_sales = DashboardDataService.get_quarterly_sales()
 
-        top_revenue = analytics["top_products_by_revenue"]
+        top_revenue = DashboardDataService.get_top_products_by_revenue()
 
-        top_quantity = analytics["top_products_by_quantity"]
+        top_quantity = DashboardDataService.get_top_products_by_quantity()
 
         st.divider()
 
@@ -43,7 +46,7 @@ class SalesPage:
         )
 
         st.divider()
-        
+
         st.subheader("📆 Weekly Sales")
 
         LineChart.render(
@@ -62,7 +65,7 @@ class SalesPage:
 
         st.divider()
 
-        st.subheader("🏆 Top Product By revenue")
+        st.subheader("🏆 Top Products by Revenue")
 
         BarChart.render(
             top_revenue,

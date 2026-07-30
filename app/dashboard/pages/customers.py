@@ -5,7 +5,8 @@ from app.dashboard.services.dashboard_session import DashboardSession
 from app.dashboard.components.charts.bar_chart import BarChart
 
 from app.dashboard.components.charts.horizontal_bar import HorizontalBarChart
-
+from app.dashboard.services.dashboard_data_service import DashboardDataService
+from app.dashboard.components.empty_state import EmptyState
 class CustomerPage:
 
     @staticmethod
@@ -15,13 +16,14 @@ class CustomerPage:
 
         if not DashboardSession.has_dataset():
 
-            st.warning("Please upload a dataset first.")
+            EmptyState.render(
+                "📂 No Dataset Loaded",
+                "Upload and process a retail dataset from the Dataset page to begin using RetailPulse AI."
+            )
 
             return
 
-        result = DashboardSession.get_pipeline_result()
-
-        analytics = result["analytics"]
+        analytics = DashboardDataService.get_rfm()
 
         top_customers_revenue = analytics["top_customers_by_revenue"]
 

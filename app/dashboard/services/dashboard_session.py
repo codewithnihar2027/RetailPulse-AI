@@ -1,4 +1,7 @@
 import streamlit as st
+from datetime import datetime
+from app.config.settings import Config
+
 
 
 class DashboardSession:
@@ -83,9 +86,12 @@ class DashboardSession:
 
         st.session_state["latest_ai_response"] = {
             "question": question,
-            "response": response
+            "response": response,
+            "model": Config.OPENROUTER_MODEL,
+            "generated_at": datetime.now().strftime(
+                "%d %b %Y, %I:%M %p"
+            )
         }
-
 
     @staticmethod
     def get_latest_ai_response():
