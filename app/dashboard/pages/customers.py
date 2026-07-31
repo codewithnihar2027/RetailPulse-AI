@@ -23,7 +23,7 @@ class CustomerPage:
 
             return
 
-        analytics = DashboardDataService.get_rfm()
+        analytics = DashboardDataService.get_analytics()
 
         top_customers_revenue = analytics["top_customers_by_revenue"]
 

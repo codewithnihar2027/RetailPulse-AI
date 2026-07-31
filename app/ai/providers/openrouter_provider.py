@@ -28,10 +28,10 @@ class OpenRouterProvider(BaseProvider):
                     "role": "user",
                     "content": prompt
                 }
-            ],
-            "reasoning": {
-                "exclude": True
-            }
+            ]
+            # "reasoning": {
+            #     "exclude": True
+            # }
         }
 
         try:
@@ -49,6 +49,9 @@ class OpenRouterProvider(BaseProvider):
 
             print("OpenRouter Response:")
             print(data)
+            print("Status Code:", response.status_code)
+            print("Using Model:", Config.OPENROUTER_MODEL)
+            print(response.text)
 
             # Handle API errors gracefully
             if not response.ok:

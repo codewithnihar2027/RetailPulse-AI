@@ -8,15 +8,24 @@ class ContextBuilder:
     """
 
     @staticmethod
-    def _to_records(df, limit=10):
+    def _to_markdown(df, limit=10):
+        """
+        Convert DataFrame to Markdown table.
+        """
 
         if df is None:
-            return []
+            return "No data available."
 
         try:
-            return df.head(limit).to_dict(orient="records")
+
+            if df.empty:
+                return "No data available."
+
+            return df.head(limit).to_markdown(index=False)
+
         except Exception:
-            return df
+
+            return str(df)
 
     @staticmethod
     def build():
@@ -39,25 +48,27 @@ class ContextBuilder:
             # ======================================
 
             "sales_summary": analytics.get("sales_summary"),
+
             "daily_summary": analytics.get("daily_summary"),
+
             "monthly_growth": analytics.get("monthly_growth"),
 
-            "monthly_sales": ContextBuilder._to_records(
+            "monthly_sales": ContextBuilder._to_markdown(
                 analytics.get("monthly_sales"),
                 limit=24,
             ),
 
-            "weekly_sales": ContextBuilder._to_records(
+            "weekly_sales": ContextBuilder._to_markdown(
                 analytics.get("weekly_sales"),
                 limit=52,
             ),
 
-            "quarterly_sales": ContextBuilder._to_records(
+            "quarterly_sales": ContextBuilder._to_markdown(
                 analytics.get("quarterly_sales"),
                 limit=8,
             ),
 
-            "country_sales": ContextBuilder._to_records(
+            "country_sales": ContextBuilder._to_markdown(
                 analytics.get("country_sales"),
                 limit=25,
             ),
@@ -66,12 +77,12 @@ class ContextBuilder:
             # Product Analytics
             # ======================================
 
-            "top_products_by_revenue": ContextBuilder._to_records(
+            "top_products_by_revenue": ContextBuilder._to_markdown(
                 analytics.get("top_products_by_revenue"),
                 limit=20,
             ),
 
-            "top_products_by_quantity": ContextBuilder._to_records(
+            "top_products_by_quantity": ContextBuilder._to_markdown(
                 analytics.get("top_products_by_quantity"),
                 limit=20,
             ),
@@ -82,16 +93,15 @@ class ContextBuilder:
 
             "rfm_summary": analytics.get("rfm_summary"),
 
-            "top_customers_by_revenue": ContextBuilder._to_records(
+            "top_customers_by_revenue": ContextBuilder._to_markdown(
                 analytics.get("top_customers_by_revenue"),
                 limit=20,
             ),
 
-            "top_customers_by_orders": ContextBuilder._to_records(
+            "top_customers_by_orders": ContextBuilder._to_markdown(
                 analytics.get("top_customers_by_orders"),
                 limit=20,
             ),
-
         }
 
         return context

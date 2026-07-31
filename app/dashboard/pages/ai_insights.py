@@ -133,15 +133,17 @@ class AIInsightsPage:
                 st.markdown(
                     ResponseFormatter.format(
                         latest["response"]
-                    )
+                    ),
+                    help=None,
                 )
+                # st.code(latest["response"])
 
                 st.download_button(
                     label="📥 Download Report (.md)",
                     data=latest["response"],
                     file_name="retailpulse_ai_report.md",
                     mime="text/markdown",
-                    use_container_width=True,
+                    width="stretch",
                 )
 
                 pdf = PDFReport.generate(latest)
@@ -150,7 +152,7 @@ class AIInsightsPage:
                     data=pdf,
                     file_name="retailpulse_ai_report.pdf",
                     mime="application/pdf",
-                    use_container_width=True
+                    width="stretch"
                 )
 
         # ==============================
