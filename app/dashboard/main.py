@@ -25,7 +25,6 @@ from app.dashboard.pages.sales import SalesPage
 from app.dashboard.pages.customers import CustomerPage
 from app.dashboard.pages.forecasting import ForecastPage
 from app.dashboard.pages.ai_insights import AIInsightsPage
-from app.dashboard.pages.settings import SettingsPage
 from app.dashboard.pages.dataset import DatasetPage
 
 
@@ -55,7 +54,6 @@ PAGE_ROUTES = {
     "👥 Customer Analytics": CustomerPage,
     "📊 Forecasting": ForecastPage,
     "🧠 AI Copilot": AIInsightsPage,
-    "⚙ Settings": SettingsPage,
 }
 
 
