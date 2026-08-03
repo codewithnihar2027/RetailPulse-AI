@@ -23,6 +23,9 @@ RetailPulse AI is an end-to-end retail analytics platform that automates the com
 It combines **Data Engineering**, **Business Intelligence**, **Machine Learning**, and **Generative AI** into a single application for retail decision-making.
 
 ---
+## Live Demo 
+  https://retailpulse-ai-jlrw7ozjaepfihtpabcfxw.streamlit.app/
+---
 
 ## ✨ Features
 
